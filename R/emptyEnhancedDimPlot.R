@@ -1,13 +1,12 @@
-#' @title enhancedDimPlot
+#' @title emptyEnhancedDimPlot
 #'
-#' @description A customized version of Seurat's DimPlot. Used for
-#' plotting dimensional reductions.
+#' @description Create a scatter plot where the points are not displayed but labels
+#' for each group are.
 #'
 #' @param object scRNAseq data object
 #' @param reduction dimensional reduction to use. Default: tsne
 #' @param group_by Metadata variable to use in grouping data. If none is provided,
 #' the current ident will be used.  Default: NULL
-#' @param split_by Metadata variable to use in faceting the plots. Default: NULL
 #' @param group_plot If provided, only this identity group will be displayed. Default: NULL
 #' @param dim_1 Dimension to display along the x-axis. Default: 1
 #' @param dim_2 Dimension to display along the y-axis. Default: 2
@@ -18,10 +17,10 @@
 #' @param label_size Label font size. Default: 3
 #' @param label_text_color Label font color. Default: black
 #'
-#' @importFrom dplyr enquo quo_name inner_join filter
 #' @importFrom tibble rownames_to_column
+#' @importFrom dplyr inner_join select filter
 #' @importFrom stats median
-#' @importFrom ggplot2 ggplot aes geom_point facet_wrap theme
+#' @importFrom ggplot2 ggplot aes geom_point theme
 #' @importFrom ggrepel geom_label_repel
 #'
 #' @return
@@ -29,28 +28,27 @@
 #'
 #' @examples
 #'
-enhancedDimPlot <- function(object, ...){
-  UseMethod('enhancedDimPlot')
+emptyEnhancedDimPlot <- function(object, ...){
+  UseMethod("emptyEnhancedDimPlot")
 }
 
-#' @rdname enhancedDimPlot
-#' @method enhancedDimPlot Seurat
-#' @importFrom Seurat Embeddings FetchData
+#' @rdname emptyEnhancedDimPlot
+#' @method emptyEnhancedDimPlot Seurat
+#' @importFrom Seurat Embeddings
 #' @export
 #' @return
-enhancedDimPlot.Seurat <- function(object,
-                                   reduction = "tsne",
-                                   group_by = NULL,
-                                   group_plot = NULL,
-                                   split_by = NULL,
-                                   dim_1 = 1,
-                                   dim_2 = 2,
-                                   pt.size = 1,
-                                   alpha = 1,
-                                   force = 1,
-                                   label = TRUE,
-                                   label_size = 3,
-                                   label_text_color = 'black'){
+emptyEnhancedDimPlot.Seurat <- function(object,
+                                        reduction = "tsne",
+                                        group_by = NULL,
+                                        group_plot = NULL,
+                                        dim_1 = 1,
+                                        dim_2 = 2,
+                                        pt_size = 1,
+                                        alpha = 1,
+                                        force = 1,
+                                        label = TRUE,
+                                        label_size = 3,
+                                        label_text_color = 'black'){
   try(
     if (is.null(group_by)){
       group_by <- "ident"
@@ -62,28 +60,11 @@ enhancedDimPlot.Seurat <- function(object,
   )
   group_by <- enquo(group_by)
 
-  try(
-    if (is.character(split_by)) {
-      split_by <- as.name(substitute(split_by))
-    }, silent = TRUE
-  )
-  if(is.null(split_by)){
-    faceting <- FALSE
-  } else {
-    faceting <- TRUE
-  }
-  split_by <- enquo(split_by)
-
   if (!reduction %in% names(object)) {
     stop(glue("{} coordinates were not found in {object}"))
   }
   dimData <- Embeddings(object = object,
                         reduction = reduction)
-
-  metaData <- FetchData(object = object,
-                        vars = c(quo_name(group_by),
-                                 quo_name(split_by))) %>%
-    rownames_to_column('cell')
 
   dimNames <- colnames(dimData)
 
@@ -93,7 +74,10 @@ enhancedDimPlot.Seurat <- function(object,
   plot.data <- dimData %>%
     as.data.frame() %>%
     rownames_to_column('cell') %>%
-    inner_join(metaData,
+    inner_join(object@meta.data %>%
+                 rownames_to_column('cell') %>%
+                 select(cell,
+                        !!group_by),
                by = 'cell')
 
   if (!is.null(group_plot)){
@@ -108,18 +92,11 @@ enhancedDimPlot.Seurat <- function(object,
     summarise(x = median(x = x),
               y = median(x = y))
 
-  p1 <- plot.data %>%
-    ggplot(aes(x = x,
-               y = y,
-               color = !!group_by,
-               fill = !!group_by,
-               label = !!group_by)) +
-    geom_point(size = pt.size,
-               alpha = alpha,
-               shape = 21)
-
-  if (label){
-    p2 <- p1 +
+    p2 <- centers %>%
+      ggplot(aes(x = x,
+                 y = y),
+             size = 0,
+             alpha = 0) +
       geom_point(data = centers,
                  mapping = aes(x = x,
                                y = y),
@@ -132,12 +109,6 @@ enhancedDimPlot.Seurat <- function(object,
                        color = label_text_color,
                        box.padding = 1,
                        force = force)
-  } else {
-    p2 <- p1
-  }
 
-  if (isTRUE(faceting)){
-    p2 <- p2 + facet_wrap(quo_name(split_by))
-  }
   p2 + theme(legend.position = "none")
 }
