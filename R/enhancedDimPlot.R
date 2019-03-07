@@ -18,7 +18,7 @@
 #' @param label_size Label font size. Default: 3
 #' @param label_text_color Label font color. Default: black
 #'
-#' @importFrom dplyr enquo quo_name inner_join filter
+#' @importFrom dplyr enquo quo_name inner_join filter group_by summarise
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats median
 #' @importFrom ggplot2 ggplot aes geom_point facet_wrap theme
@@ -62,6 +62,8 @@ enhancedDimPlot.Seurat <- function(object,
   )
   group_by <- enquo(group_by)
 
+  varlist <- c(quo_name(group_by))
+
   try(
     if (is.character(split_by)) {
       split_by <- as.name(substitute(split_by))
@@ -71,6 +73,7 @@ enhancedDimPlot.Seurat <- function(object,
     faceting <- FALSE
   } else {
     faceting <- TRUE
+    varlist <- c(varlist, quo_name(split_by))
   }
   split_by <- enquo(split_by)
 
@@ -81,8 +84,7 @@ enhancedDimPlot.Seurat <- function(object,
                         reduction = reduction)
 
   metaData <- FetchData(object = object,
-                        vars = c(quo_name(group_by),
-                                 quo_name(split_by))) %>%
+                        vars = varlist) %>%
     rownames_to_column('cell')
 
   dimNames <- colnames(dimData)
