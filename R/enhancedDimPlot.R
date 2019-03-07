@@ -64,6 +64,8 @@ enhancedDimPlot.Seurat <- function(object,
 
   varlist <- c(quo_name(grouping_var))
 
+  varlist <- c(quo_name(group_by))
+
   try(
     if (is.character(split_by)) {
       split_by <- as.name(substitute(split_by))
