@@ -8,7 +8,7 @@
 emptyEnhancedDimPlot(object, ...)
 
 \method{emptyEnhancedDimPlot}{Seurat}(object, reduction = "tsne",
-  group_by = NULL, group_plot = NULL, dim_1 = 1, dim_2 = 2,
+  grouping_var = NULL, group_plot = NULL, dim_1 = 1, dim_2 = 2,
   pt_size = 1, alpha = 1, force = 1, label = TRUE,
   label_size = 3, label_text_color = "black")
 }
@@ -17,7 +17,7 @@ emptyEnhancedDimPlot(object, ...)
 
 \item{reduction}{dimensional reduction to use. Default: tsne}
 
-\item{group_by}{Metadata variable to use in grouping data. If none is provided,
+\item{grouping_var}{Metadata variable to use in grouping data. If none is provided,
 the current ident will be used.  Default: NULL}
 
 \item{group_plot}{If provided, only this identity group will be displayed. Default: NULL}

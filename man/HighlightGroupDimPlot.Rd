@@ -8,7 +8,7 @@
 HighlightGroupDimPlot(object, ...)
 
 \method{HighlightGroupDimPlot}{Seurat}(object, reduction = "tsne",
-  group_by = NULL, highlight_group = NULL,
+  grouping_var = NULL, highlight_group = NULL,
   highlight_color = "#E41A1C", contrast_color = "#AAAAAA", dim_1 = 1,
   dim_2 = 2, pt_size = 1, highlight_alpha = 1,
   contrast_alpha = 0.75, force = 1, label = TRUE, label_size = 3,
@@ -19,7 +19,7 @@ HighlightGroupDimPlot(object, ...)
 
 \item{reduction}{dimensional reduction to use. Default: tsne}
 
-\item{group_by}{Metadata variable to use in grouping data. If none is provided,
+\item{grouping_var}{Metadata variable to use in grouping data. If none is provided,
 the current ident will be used.  Default: NULL}
 
 \item{highlight_group}{Particular group to highlight. Default: NULL}

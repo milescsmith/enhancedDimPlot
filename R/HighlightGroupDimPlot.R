@@ -4,7 +4,7 @@
 #'
 #' @param object scRNAseq data object
 #' @param reduction dimensional reduction to use. Default: tsne
-#' @param group_by Metadata variable to use in grouping data. If none is provided,
+#' @param grouping_var Metadata variable to use in grouping data. If none is provided,
 #' the current ident will be used.  Default: NULL
 #' @param highlight_group Particular group to highlight. Default: NULL
 #' @param highlight_color Color to highlight chosen group with. Default: red
@@ -17,8 +17,9 @@
 #' @param label Should labels be shown? Default: TRUE
 #' @param label_size Label font size. Default: 3
 #' @param label_text_color Label font color. Default: black
+#'
 #' @importFrom tibble rownames_to_column
-#' @importFrom dplyr filter select inner_join
+#' @importFrom dplyr filter select inner_join group_by summarise
 #' @importFrom stats median
 #' @importFrom ggplot2 ggplot theme aes geom_point
 #' @importFrom ggrepel geom_label_repel
@@ -38,7 +39,7 @@ HighlightGroupDimPlot <- function(object, ...){
 #' @return
 HighlightGroupDimPlot.Seurat <- function(object,
                                          reduction = "tsne",
-                                         group_by = NULL,
+                                         grouping_var = NULL,
                                          highlight_group = NULL,
                                          highlight_color = "#E41A1C",
                                          contrast_color = "#AAAAAA",
@@ -52,15 +53,15 @@ HighlightGroupDimPlot.Seurat <- function(object,
                                          label_size = 3,
                                          label_text_color = 'black'){
   try(
-    if (is.null(group_by)){
-      group_by <- "ident"
+    if (is.null(grouping_var)){
+      grouping_var <- "ident"
     }, silent = TRUE)
   try(
-    if (is.character(group_by)) {
-      group_by <- as.name(substitute(group_by))
+    if (is.character(grouping_var)) {
+      grouping_var <- as.name(substitute(grouping_var))
     }, silent = TRUE
   )
-  group_by <- enquo(group_by)
+  grouping_var <- enquo(grouping_var)
 
   try(
     if (is.character(highlight_group)) {
@@ -90,20 +91,20 @@ HighlightGroupDimPlot.Seurat <- function(object,
     inner_join(object@meta.data %>%
                  rownames_to_column('cell') %>%
                  select(cell,
-                        !!group_by),
+                        !!grouping_var),
                by = 'cell')
 
   plot.data[["x"]] <- plot.data[, dim_1]
   plot.data[["y"]] <- plot.data[, dim_2]
 
   if (is.true(highlight)) {
-    filtered.plot.data <- plot.data %>% filter(!!group_by == highlight_group)
-    remaining.plot.data <- plot.data %>% filter(!(!!group_by) == highlight_group)
+    filtered.plot.data <- plot.data %>% filter(!!grouping_var == highlight_group)
+    remaining.plot.data <- plot.data %>% filter(!(!!grouping_var) == highlight_group)
   }
 
   centers <- filtered.plot.data %>%
-    dplyr::group_by(!!group_by) %>%
-    dplyr::summarise(x = median(x = x),
+    group_by(!!grouping_var) %>%
+    summarise(x = median(x = x),
               y = median(x = y))
 
   p1 <- remaining.plot.data %>%
@@ -127,8 +128,8 @@ HighlightGroupDimPlot.Seurat <- function(object,
                  size = 0,
                  alpha = 0) +
       geom_label_repel(data = centers,
-                       mapping = aes(label = !!group_by,
-                                     fill = !!group_by),
+                       mapping = aes(label = !!grouping_var,
+                                     fill = !!grouping_var),
                        size = label_size,
                        color = label_text_color,
                        box.padding = 1,

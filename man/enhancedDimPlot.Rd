@@ -8,16 +8,16 @@
 enhancedDimPlot(object, ...)
 
 \method{enhancedDimPlot}{Seurat}(object, reduction = "tsne",
-  group_by = NULL, group_plot = NULL, split_by = NULL, dim_1 = 1,
-  dim_2 = 2, pt.size = 1, alpha = 1, force = 1, label = TRUE,
-  label_size = 3, label_text_color = "black")
+  grouping_var = NULL, group_plot = NULL, split_by = NULL,
+  dim_1 = 1, dim_2 = 2, pt_size = 1, alpha = 1, force = 1,
+  label = TRUE, label_size = 3, label_text_color = "black")
 }
 \arguments{
 \item{object}{scRNAseq data object}
 
 \item{reduction}{dimensional reduction to use. Default: tsne}
 
-\item{group_by}{Metadata variable to use in grouping data. If none is provided,
+\item{grouping_var}{Metadata variable to use in grouping data. If none is provided,
 the current ident will be used.  Default: NULL}
 
 \item{group_plot}{If provided, only this identity group will be displayed. Default: NULL}
@@ -28,6 +28,8 @@ the current ident will be used.  Default: NULL}
 
 \item{dim_2}{Dimension to display along the y-axis. Default: 2}
 
+\item{pt_size}{Point size. Default: 1}
+
 \item{alpha}{Point alpha. Default: 1 (i.e. fully opaque)}
 
 \item{force}{Force parameter to pass to ggrepel.  See \code{ggrepel::\link[geom_label_repel]{geom_label_repel}}}
@@ -37,8 +39,6 @@ the current ident will be used.  Default: NULL}
 \item{label_size}{Label font size. Default: 3}
 
 \item{label_text_color}{Label font color. Default: black}
-
-\item{pt_size}{Point size. Default: 1}
 }
 \description{
 A customized version of Seurat's DimPlot. Used for

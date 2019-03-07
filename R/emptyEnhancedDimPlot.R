@@ -5,7 +5,7 @@
 #'
 #' @param object scRNAseq data object
 #' @param reduction dimensional reduction to use. Default: tsne
-#' @param group_by Metadata variable to use in grouping data. If none is provided,
+#' @param grouping_var Metadata variable to use in grouping data. If none is provided,
 #' the current ident will be used.  Default: NULL
 #' @param group_plot If provided, only this identity group will be displayed. Default: NULL
 #' @param dim_1 Dimension to display along the x-axis. Default: 1
@@ -18,7 +18,7 @@
 #' @param label_text_color Label font color. Default: black
 #'
 #' @importFrom tibble rownames_to_column
-#' @importFrom dplyr inner_join select filter
+#' @importFrom dplyr inner_join select filter group_by summarise
 #' @importFrom stats median
 #' @importFrom ggplot2 ggplot aes geom_point theme
 #' @importFrom ggrepel geom_label_repel
@@ -39,7 +39,7 @@ emptyEnhancedDimPlot <- function(object, ...){
 #' @return
 emptyEnhancedDimPlot.Seurat <- function(object,
                                         reduction = "tsne",
-                                        group_by = NULL,
+                                        grouping_var = NULL,
                                         group_plot = NULL,
                                         dim_1 = 1,
                                         dim_2 = 2,
@@ -50,15 +50,15 @@ emptyEnhancedDimPlot.Seurat <- function(object,
                                         label_size = 3,
                                         label_text_color = 'black'){
   try(
-    if (is.null(group_by)){
-      group_by <- "ident"
+    if (is.null(grouping_var)){
+      grouping_var <- "ident"
     }, silent = TRUE)
   try(
-    if (is.character(group_by)) {
-      group_by <- as.name(substitute(group_by))
+    if (is.character(grouping_var)) {
+      grouping_var <- as.name(substitute(grouping_var))
     }, silent = TRUE
   )
-  group_by <- enquo(group_by)
+  grouping_var <- enquo(grouping_var)
 
   if (!reduction %in% names(object)) {
     stop(glue("{} coordinates were not found in {object}"))
@@ -77,18 +77,18 @@ emptyEnhancedDimPlot.Seurat <- function(object,
     inner_join(object@meta.data %>%
                  rownames_to_column('cell') %>%
                  select(cell,
-                        !!group_by),
+                        !!grouping_var),
                by = 'cell')
 
   if (!is.null(group_plot)){
-    plot.data %<>% filter(!!group_by == group_plot)
+    plot.data %<>% filter(!!grouping_var == group_plot)
   }
 
   plot.data[["x"]] <- plot.data[, dim_1]
   plot.data[["y"]] <- plot.data[, dim_2]
 
   centers <- plot.data %>%
-    group_by(!!group_by) %>%
+    group_by(!!grouping_var) %>%
     summarise(x = median(x = x),
               y = median(x = y))
 
@@ -103,8 +103,8 @@ emptyEnhancedDimPlot.Seurat <- function(object,
                  size = 0,
                  alpha = 0) +
       geom_label_repel(data = centers,
-                       mapping = aes(label = !!group_by,
-                                     fill = !!group_by),
+                       mapping = aes(label = !!grouping_var,
+                                     fill = !!grouping_var),
                        size = label_size,
                        color = label_text_color,
                        box.padding = 1,
