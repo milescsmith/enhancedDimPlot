@@ -8,21 +8,24 @@
 #' the current ident will be used.  Default: NULL
 #' @param highlight_group Particular group to highlight. Default: NULL
 #' @param highlight_color Color to highlight chosen group with. Default: red
+#' @param highlight_alpha Highlight group point alpha. Default: 1 (i.e. fully opaque)
 #' @param contrast_color Color to use for all other groups. Default: grey
+#' @param contrast_alpha Contrast group point alpha. Default: 0.75
 #' @param dim_1 Dimension to display along the x-axis. Default: 1
 #' @param dim_2 Dimension to display along the y-axis. Default: 2
 #' @param pt_size Point size. Default: 1
-#' @param alpha Point alpha. Default: 1 (i.e. fully opaque)
-#' @param force Force parameter to pass to ggrepel.  See \code{ggrepel::\link[geom_label_repel]{geom_label_repel}}
+#' @param force Force parameter to pass to ggrepel.  See \code{\link{geom_label_repel}}
 #' @param label Should labels be shown? Default: TRUE
 #' @param label_size Label font size. Default: 3
 #' @param label_text_color Label font color. Default: black
+#' @param ... Additional parameters
 #'
 #' @importFrom tibble rownames_to_column
 #' @importFrom dplyr filter select inner_join group_by summarise
 #' @importFrom stats median
 #' @importFrom ggplot2 ggplot theme aes geom_point
 #' @importFrom ggrepel geom_label_repel
+#' @importFrom glue glue
 #'
 #' @return
 #' @export
@@ -42,16 +45,17 @@ HighlightGroupDimPlot.Seurat <- function(object,
                                          grouping_var = NULL,
                                          highlight_group = NULL,
                                          highlight_color = "#E41A1C",
+                                         highlight_alpha = 1,
                                          contrast_color = "#AAAAAA",
+                                         contrast_alpha = 0.75,
                                          dim_1 = 1,
                                          dim_2 = 2,
                                          pt_size = 1,
-                                         highlight_alpha = 1,
-                                         contrast_alpha = 0.75,
                                          force = 1,
                                          label = TRUE,
                                          label_size = 3,
-                                         label_text_color = 'black'){
+                                         label_text_color = 'black',
+                                         ...){
   try(
     if (is.null(grouping_var)){
       grouping_var <- "ident"

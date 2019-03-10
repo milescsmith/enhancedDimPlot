@@ -13,16 +13,18 @@
 #' @param dim_2 Dimension to display along the y-axis. Default: 2
 #' @param pt_size Point size. Default: 1
 #' @param alpha Point alpha. Default: 1 (i.e. fully opaque)
-#' @param force Force parameter to pass to ggrepel.  See \code{ggrepel::\link[geom_label_repel]{geom_label_repel}}
+#' @param force Force parameter to pass to ggrepel.  See \code{\link{geom_label_repel}}
 #' @param label Should labels be shown? Default: TRUE
 #' @param label_size Label font size. Default: 3
 #' @param label_text_color Label font color. Default: black
+#' @param ... Additional parameters
 #'
 #' @importFrom dplyr enquo quo_name inner_join filter group_by summarise
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats median
 #' @importFrom ggplot2 ggplot aes geom_point facet_wrap theme
 #' @importFrom ggrepel geom_label_repel
+#' @importFrom glue glue
 #'
 #' @return
 #' @export
@@ -50,7 +52,8 @@ enhancedDimPlot.Seurat <- function(object,
                                    force = 1,
                                    label = TRUE,
                                    label_size = 3,
-                                   label_text_color = 'black'){
+                                   label_text_color = 'black',
+                                   ...){
   try(
     if (is.null(grouping_var)){
       grouping_var <- "ident"
