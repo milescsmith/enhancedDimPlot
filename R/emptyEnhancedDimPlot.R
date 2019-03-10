@@ -62,12 +62,17 @@ emptyEnhancedDimPlot.Seurat <- function(object,
     }, silent = TRUE
   )
   grouping_var <- enquo(grouping_var)
+  varlist <- c(quo_name(grouping_var))
 
   if (!reduction %in% names(object)) {
-    stop(glue("{} coordinates were not found in {object}"))
+    stop(glue("{reduction} coordinates were not found in object"))
   }
   dimData <- Embeddings(object = object,
                         reduction = reduction)
+
+  metaData <- FetchData(object = object,
+                        vars = varlist) %>%
+    rownames_to_column('cell')
 
   dimNames <- colnames(dimData)
 
@@ -77,10 +82,7 @@ emptyEnhancedDimPlot.Seurat <- function(object,
   plot.data <- dimData %>%
     as.data.frame() %>%
     rownames_to_column('cell') %>%
-    inner_join(object@meta.data %>%
-                 rownames_to_column('cell') %>%
-                 select(cell,
-                        !!grouping_var),
+    inner_join(metaData,
                by = 'cell')
 
   if (!is.null(group_plot)){
