@@ -81,7 +81,7 @@ enhancedDimPlot.Seurat <- function(object,
   split_by <- enquo(split_by)
 
   if (!reduction %in% names(object)) {
-    stop(glue("{} coordinates were not found in {object}"))
+    stop(glue("{reduction} coordinates were not found in object"))
   }
   dimData <- Embeddings(object = object,
                         reduction = reduction)
