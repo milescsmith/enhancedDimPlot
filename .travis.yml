@@ -1,0 +1,16 @@
+language: r
+r:
+  - release
+cache: packages
+
+dist: xenial
+
+sudo: required
+
+addons:
+  apt:
+    packages:
+      - libgit2-dev
+      - libhdf5-dev
+      - libtool
+      - texinfo
