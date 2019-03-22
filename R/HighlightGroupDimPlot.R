@@ -62,6 +62,7 @@ HighlightGroupDimPlot.Seurat <- function(object,
     }, silent = TRUE
   )
   grouping_var <- enquo(grouping_var)
+  varlist <- c(quo_name(grouping_var))
 
   try(
     if (is.character(highlight_group)) {
@@ -79,25 +80,24 @@ HighlightGroupDimPlot.Seurat <- function(object,
   }
   dimData <- Embeddings(object = object,
                         reduction = reduction)
+  metaData <- FetchData(object = object,
+                        vars = varlist) %>%
+    rownames_to_column('cell')
 
   dimNames <- colnames(dimData)
 
   dim_1 <- dimNames[[1]]
   dim_2 <- dimNames[[2]]
-
   plot.data <- dimData %>%
     as.data.frame() %>%
     rownames_to_column('cell') %>%
-    inner_join(object@meta.data %>%
-                 rownames_to_column('cell') %>%
-                 select(cell,
-                        !!grouping_var),
+    inner_join(metaData,
                by = 'cell')
 
   plot.data[["x"]] <- plot.data[, dim_1]
   plot.data[["y"]] <- plot.data[, dim_2]
 
-  if (is.true(highlight)) {
+  if (isTRUE(highlight)) {
     filtered.plot.data <- plot.data %>% filter(!!grouping_var == highlight_group)
     remaining.plot.data <- plot.data %>% filter(!(!!grouping_var) == highlight_group)
   }
