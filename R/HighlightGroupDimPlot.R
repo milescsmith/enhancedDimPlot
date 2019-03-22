@@ -96,17 +96,7 @@ HighlightGroupDimPlot.Seurat <- function(object,
 
   dim_1 <- dimNames[[1]]
   dim_2 <- dimNames[[2]]
-<<<<<<< HEAD
-=======
 
-  # plot.data <- dimData %>%
-  #   as.data.frame() %>%
-  #   rownames_to_column('cell') %>%
-  #   inner_join(metadata %>%
-  #                select(cell,
-  #                       !!grouping_var),
-  #              by = 'cell')
->>>>>>> 59175a482113e3d09c804d2f604b7dd91eafcc82
   plot.data <- dimData %>%
     as.data.frame() %>%
     rownames_to_column('cell') %>%
