@@ -9,13 +9,15 @@ HighlightGroupDimPlot(object, ...)
 
 \method{HighlightGroupDimPlot}{Seurat}(object, reduction = "tsne",
   grouping_var = NULL, highlight_group = NULL,
-  highlight_color = "#E41A1C", contrast_color = "#AAAAAA", dim_1 = 1,
-  dim_2 = 2, pt_size = 1, highlight_alpha = 1,
-  contrast_alpha = 0.75, force = 1, label = TRUE, label_size = 3,
-  label_text_color = "black")
+  highlight_color = "#E41A1C", highlight_alpha = 1,
+  contrast_color = "#AAAAAA", contrast_alpha = 0.75, dim_1 = 1,
+  dim_2 = 2, pt_size = 1, force = 1, label = TRUE,
+  label_size = 3, label_text_color = "black", ...)
 }
 \arguments{
 \item{object}{scRNAseq data object}
+
+\item{...}{Additional parameters}
 
 \item{reduction}{dimensional reduction to use. Default: tsne}
 
@@ -26,7 +28,11 @@ the current ident will be used.  Default: NULL}
 
 \item{highlight_color}{Color to highlight chosen group with. Default: red}
 
+\item{highlight_alpha}{Highlight group point alpha. Default: 1 (i.e. fully opaque)}
+
 \item{contrast_color}{Color to use for all other groups. Default: grey}
+
+\item{contrast_alpha}{Contrast group point alpha. Default: 0.75}
 
 \item{dim_1}{Dimension to display along the x-axis. Default: 1}
 
@@ -34,15 +40,13 @@ the current ident will be used.  Default: NULL}
 
 \item{pt_size}{Point size. Default: 1}
 
-\item{force}{Force parameter to pass to ggrepel.  See \code{ggrepel::\link[geom_label_repel]{geom_label_repel}}}
+\item{force}{Force parameter to pass to ggrepel.  See \code{\link{geom_label_repel}}}
 
 \item{label}{Should labels be shown? Default: TRUE}
 
 \item{label_size}{Label font size. Default: 3}
 
 \item{label_text_color}{Label font color. Default: black}
-
-\item{alpha}{Point alpha. Default: 1 (i.e. fully opaque)}
 }
 \description{
 HighlightGroupDimPlot

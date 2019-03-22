@@ -10,10 +10,12 @@ enhancedDimPlot(object, ...)
 \method{enhancedDimPlot}{Seurat}(object, reduction = "tsne",
   grouping_var = NULL, group_plot = NULL, split_by = NULL,
   dim_1 = 1, dim_2 = 2, pt_size = 1, alpha = 1, force = 1,
-  label = TRUE, label_size = 3, label_text_color = "black")
+  label = TRUE, label_size = 3, label_text_color = "black", ...)
 }
 \arguments{
 \item{object}{scRNAseq data object}
+
+\item{...}{Additional parameters}
 
 \item{reduction}{dimensional reduction to use. Default: tsne}
 
@@ -32,7 +34,7 @@ the current ident will be used.  Default: NULL}
 
 \item{alpha}{Point alpha. Default: 1 (i.e. fully opaque)}
 
-\item{force}{Force parameter to pass to ggrepel.  See \code{ggrepel::\link[geom_label_repel]{geom_label_repel}}}
+\item{force}{Force parameter to pass to ggrepel.  See \code{\link{geom_label_repel}}}
 
 \item{label}{Should labels be shown? Default: TRUE}
 

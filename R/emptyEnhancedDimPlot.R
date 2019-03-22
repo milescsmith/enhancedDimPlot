@@ -12,16 +12,18 @@
 #' @param dim_2 Dimension to display along the y-axis. Default: 2
 #' @param pt_size Point size. Default: 1
 #' @param alpha Point alpha. Default: 1 (i.e. fully opaque)
-#' @param force Force parameter to pass to ggrepel.  See \code{ggrepel::\link[geom_label_repel]{geom_label_repel}}
+#' @param force Force parameter to pass to ggrepel.  See \code{\link{geom_label_repel}}
 #' @param label Should labels be shown? Default: TRUE
 #' @param label_size Label font size. Default: 3
 #' @param label_text_color Label font color. Default: black
+#' @param ... Additional parameters
 #'
 #' @importFrom tibble rownames_to_column
 #' @importFrom dplyr inner_join select filter group_by summarise
 #' @importFrom stats median
 #' @importFrom ggplot2 ggplot aes geom_point theme
 #' @importFrom ggrepel geom_label_repel
+#' @importFrom glue glue
 #'
 #' @return
 #' @export
@@ -48,7 +50,8 @@ emptyEnhancedDimPlot.Seurat <- function(object,
                                         force = 1,
                                         label = TRUE,
                                         label_size = 3,
-                                        label_text_color = 'black'){
+                                        label_text_color = 'black',
+                                        ...){
   try(
     if (is.null(grouping_var)){
       grouping_var <- "ident"
@@ -59,12 +62,17 @@ emptyEnhancedDimPlot.Seurat <- function(object,
     }, silent = TRUE
   )
   grouping_var <- enquo(grouping_var)
+  varlist <- c(quo_name(grouping_var))
 
   if (!reduction %in% names(object)) {
-    stop(glue("{} coordinates were not found in {object}"))
+    stop(glue("{reduction} coordinates were not found in object"))
   }
   dimData <- Embeddings(object = object,
                         reduction = reduction)
+
+  metaData <- FetchData(object = object,
+                        vars = varlist) %>%
+    rownames_to_column('cell')
 
   dimNames <- colnames(dimData)
 
@@ -74,10 +82,7 @@ emptyEnhancedDimPlot.Seurat <- function(object,
   plot.data <- dimData %>%
     as.data.frame() %>%
     rownames_to_column('cell') %>%
-    inner_join(object@meta.data %>%
-                 rownames_to_column('cell') %>%
-                 select(cell,
-                        !!grouping_var),
+    inner_join(metaData,
                by = 'cell')
 
   if (!is.null(group_plot)){
