@@ -14,3 +14,5 @@ addons:
       - libhdf5-dev
       - libtool
       - texinfo
+      - libglu1-mesa-dev
+      - libfreetype6-dev
