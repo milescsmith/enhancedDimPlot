@@ -10,7 +10,8 @@ enhancedDimPlot(object, ...)
 \method{enhancedDimPlot}{Seurat}(object, reduction = "tsne",
   grouping_var = NULL, group_plot = NULL, split_by = NULL,
   dim_1 = 1, dim_2 = 2, pt_size = 1, alpha = 1, force = 1,
-  label = TRUE, label_size = 3, label_text_color = "black", ...)
+  label = TRUE, label_size = 3, label_text_color = "black",
+  color_palette = NULL, fill_palette = NULL, ...)
 }
 \arguments{
 \item{object}{scRNAseq data object}
@@ -41,6 +42,11 @@ the current ident will be used.  Default: NULL}
 \item{label_size}{Label font size. Default: 3}
 
 \item{label_text_color}{Label font color. Default: black}
+
+\item{color_palette}{Palette to use.  If \code{fill_palette} is provided, this controls
+the color surrounding objects and the background of labels. Default: palette "bold_color" from package "rcartocolor"}
+
+\item{fill_palette}{Palette to use for point fill.  By default, this matches \code{color_palette}}
 }
 \description{
 A customized version of Seurat's DimPlot. Used for

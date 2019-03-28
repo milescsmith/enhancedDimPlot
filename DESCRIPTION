@@ -1,7 +1,7 @@
 Type: Package
 Package: enhancedDimPlot
 Title: Generate Scatterplots of scRNAseq Data
-Version: 0.0.0.9000
+Version: 0.0.0.9100
 Author: Miles Smith [aut, cre]
 Maintainer: Miles Smith <miles-smith@omrf.org>
 Authors@R: 
@@ -21,6 +21,8 @@ Imports:
   stats,
   ggplot2,
   ggrepel,
+  paletteer,
+  grDevices,
   glue
 Remotes:
   github::satijalab/seurat@release/3.0
