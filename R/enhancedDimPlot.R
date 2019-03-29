@@ -96,8 +96,8 @@ enhancedDimPlot.Seurat <- function(object,
 
   dimNames <- colnames(dimData)
 
-  dim_1 <- dimNames[[1]]
-  dim_2 <- dimNames[[2]]
+  dim_1 <- dimNames[[dim_1]]
+  dim_2 <- dimNames[[dim_2]]
 
   plotData <- dimData %>%
     as.data.frame() %>%
