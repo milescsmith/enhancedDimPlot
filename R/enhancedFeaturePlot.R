@@ -8,6 +8,8 @@
 #' @param feature Feature to use for coloring.  Anything FetchData can extract.
 #' @param grouping_var Metadata variable to use in grouping data. If none is provided,
 #' the current ident will be used.  Default: NULL
+#' @param subset_labels A list of the groups in \code{grouping_var} to display.  By default,
+#' all are displayed.  Default: NULL
 #' @param split_by Metadata variable to use in faceting the plots. Default: NULL
 #' @param group_plot If provided, only this identity group will be displayed. Default: NULL
 #' @param dim_1 Dimension to display along the x-axis. Default: 1
@@ -24,7 +26,7 @@
 #' @param ... Additional parameters
 #'
 #' @importFrom dplyr enquo quo_name inner_join filter group_by summarise
-#' @importFrom tibble rownames_to_column
+#' @importFrom tibble as_tibble
 #' @importFrom stats median
 #' @importFrom ggplot2 ggplot aes geom_point facet_wrap theme
 #' @importFrom ggrepel geom_label_repel
@@ -48,6 +50,7 @@ enhancedFeaturePlot.Seurat <- function(object,
                                        reduction = "tsne",
                                        feature,
                                        grouping_var = NULL,
+                                       subset_labels = NULL,
                                        group_plot = NULL,
                                        split_by = NULL,
                                        dim_1 = 1,
@@ -121,6 +124,10 @@ enhancedFeaturePlot.Seurat <- function(object,
     summarise(x = median(x = x),
               y = median(x = y))
 
+  if(!is.null(subset_labels)){
+    centers %<>% filter(!!grouping_var %in% subset_labels)
+  }
+
   pl <- plotData %>%
     ggplot(aes(x = x,
                y = y,
@@ -160,6 +167,10 @@ enhancedFeaturePlot.Seurat <- function(object,
     }
   }
 
-  pl + theme(legend.position = "none") + scale_color_gradient(low = scale_colors[[1]],
-                                                              high = scale_colors[[2]])
+  pl + theme(legend.position = "none") +
+    scale_color_gradient(low = scale_colors[[1]],
+                         high = scale_colors[[2]]) +
+    labs(title = quo_name(feature),
+         x = glue("{reduction}_{dim_1}"),
+         y = glue("{reduction}_{dim_2}"))
 }

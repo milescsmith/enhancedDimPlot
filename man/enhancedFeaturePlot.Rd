@@ -8,10 +8,11 @@
 enhancedFeaturePlot(object, ...)
 
 \method{enhancedFeaturePlot}{Seurat}(object, reduction = "tsne", feature,
-  grouping_var = NULL, group_plot = NULL, split_by = NULL,
-  dim_1 = 1, dim_2 = 2, pt_size = 1, alpha = 0.5, force = 1,
-  label = TRUE, label_size = 3, label_text_color = "black",
-  scale_colors = c("grey90", "red"), fill_palette = NULL, ...)
+  grouping_var = NULL, subset_labels = NULL, group_plot = NULL,
+  split_by = NULL, dim_1 = 1, dim_2 = 2, pt_size = 1,
+  alpha = 0.5, force = 1, label = TRUE, label_size = 3,
+  label_text_color = "black", scale_colors = c("grey90", "red"),
+  fill_palette = NULL, ...)
 }
 \arguments{
 \item{object}{scRNAseq data object}
@@ -24,6 +25,9 @@ enhancedFeaturePlot(object, ...)
 
 \item{grouping_var}{Metadata variable to use in grouping data. If none is provided,
 the current ident will be used.  Default: NULL}
+
+\item{subset_labels}{A list of the groups in \code{grouping_var} to display.  By default,
+all are displayed.  Default: NULL}
 
 \item{group_plot}{If provided, only this identity group will be displayed. Default: NULL}
 
