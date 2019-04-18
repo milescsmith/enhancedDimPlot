@@ -14,7 +14,7 @@ NULL
 #' See \code{magrittr::\link[magrittr]{\%<>\%}} for details.
 #'
 #' @name %<>%
-#' @rdname compound_pipe
+#' @rdname compound
 #' @keywords internal
 #' @export
 #' @importFrom magrittr %<>%
