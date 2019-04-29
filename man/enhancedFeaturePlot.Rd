@@ -7,21 +7,21 @@
 \usage{
 enhancedFeaturePlot(object, ...)
 
-\method{enhancedFeaturePlot}{Seurat}(object, reduction = "tsne", feature,
+\method{enhancedFeaturePlot}{Seurat}(object, feature, reduction = "tsne",
   grouping_var = NULL, subset_labels = NULL, group_plot = NULL,
-  split_by = NULL, dim_1 = 1, dim_2 = 2, pt_size = 1,
-  alpha = 0.5, force = 1, label = TRUE, label_size = 3,
-  label_text_color = "black", scale_colors = c("grey90", "red"),
-  fill_palette = NULL, ...)
+  split_by = NULL, lower.cutoff = 0.05, upper.cutoff = 0.95,
+  dim_1 = 1, dim_2 = 2, pt_size = 1, alpha = 0.5, force = 1,
+  label = TRUE, label_size = 3, label_text_color = "black",
+  scale_colors = c("grey90", "red"), fill_palette = NULL, ...)
 }
 \arguments{
 \item{object}{scRNAseq data object}
 
 \item{...}{Additional parameters}
 
-\item{reduction}{dimensional reduction to use. Default: tsne}
-
 \item{feature}{Feature to use for coloring.  Anything FetchData can extract.}
+
+\item{reduction}{dimensional reduction to use. Default: tsne}
 
 \item{grouping_var}{Metadata variable to use in grouping data. If none is provided,
 the current ident will be used.  Default: NULL}
@@ -32,6 +32,10 @@ all are displayed.  Default: NULL}
 \item{group_plot}{If provided, only this identity group will be displayed. Default: NULL}
 
 \item{split_by}{Metadata variable to use in faceting the plots. Default: NULL}
+
+\item{lower.cutoff}{Remove expression values below this quantile. Expressed as decimal. Default: 0.05}
+
+\item{upper.cutoff}{Remove expression values above this quantile. Expressed as decimal. Default: 0.95}
 
 \item{dim_1}{Dimension to display along the x-axis. Default: 1}
 

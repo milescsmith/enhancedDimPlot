@@ -10,8 +10,10 @@
 #' the current ident will be used.  Default: NULL
 #' @param subset_labels A list of the groups in \code{grouping_var} to display.  By default,
 #' all are displayed.  Default: NULL
-#' @param split_by Metadata variable to use in faceting the plots. Default: NULL
 #' @param group_plot If provided, only this identity group will be displayed. Default: NULL
+#' @param split_by Metadata variable to use in faceting the plots. Default: NULL
+#' @param lower.cutoff Remove expression values below this quantile. Expressed as decimal. Default: 0.05
+#' @param upper.cutoff Remove expression values above this quantile. Expressed as decimal. Default: 0.95
 #' @param dim_1 Dimension to display along the x-axis. Default: 1
 #' @param dim_2 Dimension to display along the y-axis. Default: 2
 #' @param pt_size Point size. Default: 1
@@ -47,12 +49,14 @@ enhancedFeaturePlot <- function(object, ...){
 #' @export
 #' @return
 enhancedFeaturePlot.Seurat <- function(object,
-                                       reduction = "tsne",
                                        feature,
+                                       reduction = "tsne",
                                        grouping_var = NULL,
                                        subset_labels = NULL,
                                        group_plot = NULL,
                                        split_by = NULL,
+                                       lower.cutoff = 0.05,
+                                       upper.cutoff = 0.95,
                                        dim_1 = 1,
                                        dim_2 = 2,
                                        pt_size = 1,
@@ -111,6 +115,12 @@ enhancedFeaturePlot.Seurat <- function(object,
                         vars = c(quo_name(feature), unique(varlist))) %>%
     as_tibble(rownames = "cell")
 
+  feature_levels <- metaData[[quo_name(feature)]]
+  lowend <- quantile(feature_levels[feature_levels > 0], lower.cutoff)
+  highend <- quantile(feature_levels[feature_levels > 0], upper.cutoff)
+  feature_levels[feature_levels < lowend] <- lowend
+  feature_levels[feature_levels > highend] <- highend
+  metaData[[quo_name(feature)]] <- feature_levels
 
   plotData <- dimData %>%
     inner_join(metaData, by = 'cell')
